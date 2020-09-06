@@ -43,7 +43,7 @@ This will happen:
 
 In the Asset Details tab - Additive Settings change the Additive Anim Type to Mesh Space
 
-[Imgur](https://i.imgur.com/w9Hi0AS.png)
+![Imgur](https://i.imgur.com/w9Hi0AS.png)
 
 Things should be looking better now.
 
