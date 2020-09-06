@@ -49,6 +49,8 @@ Things should be looking better now.
 
 In the Skeleton Tree Tab - Options Check Show Retargetting Options
 
+![Imgur](https://i.imgur.com/6JQKLQa.png)
+
 You may need to adjust for animation to work correctly.
 
 ToDo - Add suggested settings
