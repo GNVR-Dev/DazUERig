@@ -11,7 +11,7 @@ In the ScriptIDE tab click File - Open Script and browse to the DazUERig.dsa fil
 
 Once your character is setup and selected click Execute
 
-![Imgur](https://i.imgur.com/NC1Fe9t.png)
+![Imgur](https://i.imgur.com/eUqFAwn.png)
 
 This will rename, relabel, remove, and reparent all the necassary bones to make the Daz Skeleton compatible with the UE mannequin rig.
 
