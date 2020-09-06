@@ -1,0 +1,369 @@
+// DAZ Studio version 4.12.1.117 filetype DAZ Script
+
+// Experimental WIP Daz Skeleton to UE4 mannequin rig converter
+
+// TO CHANGE SCRIPT TO MEET YOUR NEEDS SCROLL DOWN TO LINE 250 - MAIN PROGRAM
+
+// Script to rename, relabel, delete, and reparent bones of Genesis 8 and 3 characters to match Unreal Engine Mannequin Rig
+
+	// Initialize
+	var oNode = Scene.getPrimarySelection();	
+	var oFigure = undefined;
+
+	// Section below copied from Daz Script Samples:
+	// http://docs.daz3d.com/doku.php/public/software/dazstudio/4/referenceguide/scripting/api_reference/samples/start
+
+	// If we have a bone
+	if( oNode.inherits( "DzBone" ) ){
+		// Get its skeleton
+		oFigure = oNode.getSkeleton();
+	// If we have a figure
+	} else if( oNode.inherits( "DzFigure" ) ){
+		// We have what we want
+		oFigure = oNode;
+}
+
+	// String : A function for retrieving a translation if one exists
+	function text( sText )
+	{
+		// If the version of the application supports qsTr()
+		if( typeof( qsTr ) != "undefined" ){
+			// Return the translated (if any) text
+			return qsTr( sText );
+		}
+ 
+		// Return the original text
+		return sText;
+	};
+ 
+	function Adjust_Rigging_To_Shape(){
+			
+			
+			// Let the user know we're busy
+			setBusyCursor();
+ 
+			// Create the rigging adjuster utility
+			var oRigAdjuster = new DzShapeRiggingAdjuster();
+ 
+			// Set the figure to adjustthe rigging on
+			oRigAdjuster.setFigure( oFigure );
+ 
+			// Set any facet groups to ignore
+			oRigAdjuster.setExcludedFacetGroups( [] );
+			// Set any bones to exclude
+			//oRigAdjuster.setExcludedBones( [ "lowerJaw" ] );
+		 
+			// Adjust center points
+			oRigAdjuster.setAdjustCenterPoints( true );
+			// Adjust end points
+			oRigAdjuster.setAdjustEndPoints( true );
+			// Don't adjust orientations
+			oRigAdjuster.setAdjustOrientation( false );
+ 
+			// Begin collecting undo-able operations
+			UndoStack.beginHold();
+			// If the adjustment is successful
+			if( oRigAdjuster.doAdjustments() ){
+			// Create the undo item
+				UndoStack.accept( text("Adjust Rigging to Shape") );
+			// If the adjustment fails
+			} else {
+				// Cancel the undo item
+				UndoStack.cancel();
+			}
+ 
+			// Let the user know we're done
+			clearBusyCursor();
+				}
+				
+    	function triggerAction( sClassName )
+    	{
+    		// Get the action manager
+    		var oActionMgr = MainWindow.getActionMgr();
+    		// If we do not have an action manager
+    		if( !oActionMgr ){
+    			// We are done...
+    			return;
+    		}
+     
+    		// Find the action we want
+    		var oAction = oActionMgr.findAction( sClassName );
+    		// If the action was not found
+    		if( !oAction ){
+    			// Inform the user...
+    			MessageBox.warning( 
+    				text( "The \"%1\" action could not be found." ).arg( sClassName ),
+    				text( "Resource Error" ), text( "&OK" ), "" );
+    			// We are done...
+    			return;
+    		}
+     
+    		// If the action is disabled
+    		if( !oAction.enabled ){
+    			// Inform the user...
+    			MessageBox.warning( 
+    				text( "The \"%1\" action is currently disabled." ).arg( oAction.text ),
+    				text( "Resource Error" ), text( "&OK" ), "" );
+    			// We are done...
+    			return;
+    		}
+     
+    		// Trigger execution of the action
+    		oAction.trigger();
+    	};
+
+	// Sections above copied from Daz Script Samples:
+// http://docs.daz3d.com/doku.php/public/software/dazstudio/4/referenceguide/scripting/api_reference/samples/start
+
+// Function to rename character to root so that when exported root will be the base of the character
+// not needed when using Daz to Unreal plugin
+
+	function RenameFigure(NewFigureName){
+		print (oFigure.getName());
+		oFigure.setName(NewFigureName);
+		oFigure.setLabel(NewFigureName);
+}
+
+// Function Execute - Make changes when bone is found
+
+	function Execute(ObjectThatHasBone,WhatToDo,FoundBoneA,FoundBoneB,Change){
+
+		switch (WhatToDo){
+							
+			case "Rename":
+				print (FoundBoneA.getName()+" found in "+ObjectThatHasBone+" and renamed "+Change);	
+				FoundBoneA.setName(Change);
+				FoundBoneA.setLabel(Change);
+				break;
+			
+			case "Remove":
+				print (FoundBoneA.getName()+" found in "+ObjectThatHasBone+" and deleted");
+				FoundBoneA.select( true );
+				triggerAction( "DzJEDeleteBoneAction" );
+				break;
+			
+			case "ReParent":		
+				if (!FoundBoneB) {
+					print (FoundBoneA.getName()+" found in "+ObjectThatHasBone+","+Change+" was not");
+					break;			
+				}
+				
+				else {	
+					print (FoundBoneA.getName()+" found in "+ObjectThatHasBone+", and reparented to"+FoundBoneB);
+					FoundBoneA.select( true );
+					triggerAction( "DzJEDeleteBoneAction" );
+					break;		
+				}
+		
+			case "Hip_Pelvis_Change":
+				if (!FoundBoneB) {
+					print (FoundBoneA.getName()+" found in "+ObjectThatHasBone+","+Change+" was not");
+					break;			
+				}
+				
+				else {	
+					print (FoundBoneA.getName()+" found in "+ObjectThatHasBone+" "+FoundBoneB.getName()+" was deleted");
+					print ("and "+FoundBoneA.getName()+" was remaned "+Change);
+					FoundBoneB.select( true );
+					triggerAction( "DzJEDeleteBoneAction" );
+					FoundBoneA.setName(Change);
+					FoundBoneA.setLabel(Change);					
+					break;	
+		}								
+	}						
+}		
+
+							
+// Function to Search For Bone - Execute if found
+
+	function Search_For_Bone (WhatToDoIfFound,BoneToFindA,BoneToFindB,Change){		
+			bonefounda = oFigure.findBone(BoneToFindA);
+			bonefoundb = oFigure.findBone(BoneToFindB);
+			if (!bonefounda) {
+				print (BoneToFindA+" not found in character");
+			}
+			else {					
+				
+				Execute ("Character",WhatToDoIfFound,bonefounda,bonefoundb,Change)
+
+			}
+			len = oFigure.getNumNodeChildren()	
+			for (var i=1; i<len; i++) {
+				child = oFigure.getNodeChild(i);
+				bonefounda = child.findBone(BoneToFindA);
+				bonefoundb = child.findBone(BoneToFindB);
+				if (!bonefounda) {
+					print (BoneToFindA+" not found in "+child.getName());
+			}
+				else {
+					
+					Execute (child.getName(),WhatToDoIfFound,bonefounda,bonefoundb,Change)					
+
+				}
+				lenb = child.getNumNodeChildren()
+					for (var j=1; j<lenb; j++) {
+						cofc = child.getNodeChild(j);							
+						bonefounda = cofc.findBone(BoneToFindA);
+						bonefoundb = cofc.findBone(BoneToFindB);						
+						if (!bonefounda){
+							print (BoneToFindA+" not found in "+cofc.getName());
+						}
+						else {
+							
+							Execute (cofc.getName(),WhatToDoIfFound,bonefounda,bonefoundb,Change)
+
+						}
+				}
+		}	
+																			
+	}
+		
+// Function to set up changing hip and pelvis bones
+
+	function Hip_Pelvis_Change(){
+	
+		Search_For_Bone ("Hip_Pelvis_Change","hip","pelvis","pelvis")
+	}	
+// Function to set up rename bone
+
+	function RenameBone(BoneToRename,NewName){
+	
+		Search_For_Bone ("Rename",BoneToRename,"Null",NewName)
+	}
+
+// Function to set up remove bone
+
+	function RemoveBone (BoneToRemove){
+	
+		Search_For_Bone ("Remove",BoneToRemove,"Null","Null")
+	}
+	
+// Function to set up reparent bone
+
+	function ReParentBone (BoneToReparent,BoneToReparentTo){
+	
+		Search_For_Bone ("Reparent",BoneToReparent,BoneToReparentTo,BoneToReparentTo)
+	}
+	
+	 	    	
+
+//	Start Main Program  //
+//  Edit below if you want change what bones get renamed, removed, or reparented.
+
+
+Hip_Pelvis_Change()
+
+//ReparentBone
+
+// Example:
+// ReParentBone("Name of bone you want reparented","name of new bone you want it parented to")
+
+
+// Twist bones changed to leaf bones - weird results - commented out for now
+
+//ReParentBone("lHand","lForearmBend")
+//ReParentBone("rHand","rForearmBend")
+
+//ReParentBone("lForearmBend","lShldrBend")
+//ReParentBone("rForearmBend","rShldrBend")
+
+//ReParentBone("lShin","lThighBend")
+//ReParentBone("rShin","rThighBend")
+
+
+
+// Remove Bones
+
+// Example:
+// RemoveBone("Name of bone to remove")
+
+RemoveBone ("chestLower")
+
+RemoveBone ("lCarpal1")
+RemoveBone ("lCarpal2")
+RemoveBone ("lCarpal3")
+RemoveBone ("lCarpal4")
+RemoveBone ("rCarpal1")
+RemoveBone ("rCarpal2")
+RemoveBone ("rCarpal3")
+RemoveBone ("rCarpal4")
+RemoveBone ("neckUpper")
+
+//Remove twist bones instead of making them leaf bones
+//Comment out if you want to try them as leaf bones
+
+RemoveBone ("lShldrTwist")
+RemoveBone ("lForearmTwist")
+RemoveBone ("rShldrTwist")
+RemoveBone ("rForearmTwist")
+RemoveBone ("lThighTwist")		
+RemoveBone ("rThighTwist")
+
+
+// Rename bones:
+
+// Example:
+// RenameBone("name of bone to rename","new name")
+			
+RenameBone("abdomenLower","spine_01");
+RenameBone("abdomenUpper","spine_02");
+RenameBone("chestUpper","spine_03");
+RenameBone("lCollar","clavicle_l");
+RenameBone("lShldrBend","upperarm_l");
+RenameBone("lForearmBend","lowerarm_l");
+RenameBone("lHand","hand_l");
+RenameBone("rCollar","clavicle_r");
+RenameBone("rShldrBend","upperarm_r");
+RenameBone("rForearmBend","lowerarm_r");
+RenameBone("rHand","hand_r");
+RenameBone("neckLower","neck_01");
+RenameBone("head","head");
+RenameBone("lThighBend","thigh_l");
+RenameBone("lShin","calf_l");
+RenameBone("lFoot","foot_l");
+RenameBone("rThighBend","thigh_r");
+RenameBone("rShin","calf_r");
+RenameBone("rFoot","foot_r");
+RenameBone("lMetatarsals","ball_l");
+RenameBone("rMetatarsals","ball_r");
+RenameBone("lIndex1","index_01_l");
+RenameBone("lIndex2","index_02_l");
+RenameBone("lIndex3","index_03_l");
+RenameBone("lMid1","middle_01_l");
+RenameBone("lMid2","middle_02_l");
+RenameBone("lMid3","middle_03_l");
+RenameBone("lPinky1","pinky_01_l");
+RenameBone("lPinky2","pinky_02_l");
+RenameBone("lPinky3","pinky_03_l");
+RenameBone("lRing1","ring_01_l");
+RenameBone("lRing2","ring_02_l");
+RenameBone("lRing3","ring_03_l");
+RenameBone("lThumb1","thumb_01_l");
+RenameBone("lThumb2","thumb_02_l");
+RenameBone("lThumb3","thumb_03_l");
+RenameBone("rIndex1","index_01_r");
+RenameBone("rIndex2","index_02_r");
+RenameBone("rIndex3","index_03_r");
+RenameBone("rMid1","middle_01_r");
+RenameBone("rMid2","middle_02_r");
+RenameBone("rMid3","middle_03_r");
+RenameBone("rPinky1","pinky_01_r");
+RenameBone("rPinky2","pinky_02_r");
+RenameBone("rPinky3","pinky_03_r");
+RenameBone("rRing1","ring_01_r");
+RenameBone("rRing2","ring_02_r");
+RenameBone("rRing3","ring_03_r");
+RenameBone("rThumb1","thumb_01_r");
+RenameBone("rThumb2","thumb_02_r");
+RenameBone("rThumb3","thumb_03_r");
+
+//Rename leaf bones
+RenameBone ("lShldrTwist","upperarm_twist_01_l");
+RenameBone ("lForearmTwist","lowerarm_twist_01_l");
+RenameBone ("rShldrTwist","upperarm_twist_01_r");
+RenameBone ("rForearmTwist","lowerarm_twist_01_r");
+RenameBone ("lThighTwist","thigh_twist_01_l")	;	
+RenameBone ("rThighTwist","thigh_twist_01_r");
+
+//ALWAYS RUN THIS LAST
+Adjust_Rigging_To_Shape()
