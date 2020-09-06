@@ -33,7 +33,7 @@ From Daz Studio make sure your character is selected and SendToUnreal
 
 You may want to set up a new Intermediate Folder so that you don't overwrite existing exported characters.
 
-[Imgur](https://i.imgur.com/hymPiaF.png)
+![Imgur](https://i.imgur.com/hymPiaF.png)
 
 Once imported open an UE animation and change the Preview Mesh to your character
 
