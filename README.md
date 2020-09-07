@@ -1,6 +1,20 @@
 # DazUERig
 Rename - Remove - Reparent Daz bones to use Unreal Engine manneguin animations
 
+Setting up the DazToUnreal plugin:
+
+Make sure the DazToUnreal engine plugin is enabled
+
+![Imgur](https://i.imgur.com/8GZYiLA.png)
+
+Add an Unreal Engine animation pack and find the skeleton rig that is used for those animations
+
+![Imgur](https://i.imgur.com/c6BGS8B.png)
+
+In your Project Settings under Plugins - Daz To Unreal Engine Settings change the Genisis 3 and Genesis 8 Skeletons to the same skeleton as the animations
+
+![Imgur](https://i.imgur.com/2h3IFOe.png)
+
 Running the script:
 
 Either download the DazUERig script or clone a copy to your computer.
@@ -15,21 +29,7 @@ Once your character is setup and selected click Execute
 
 This will rename, relabel, remove, and reparent all the necassary bones to make the Daz Skeleton compatible with the UE mannequin rig.
 
-Using DazToUnreal plugin to transfer:
-
-Make sure the DazToUnreal engine plugin is enabled
-
-![Imgur](https://i.imgur.com/8GZYiLA.png)
-
-Add an Unreal Engine animation pack and find the skeleton rig that is used for those animations
-
-![Imgur](https://i.imgur.com/c6BGS8B.png)
-
-In your Project Settings under Plugins - Daz To Unreal Engine Settings change the Genisis 3 and Genesis 8 Skeletons to use the same skeleton as the animations
-
-![Imgur](https://i.imgur.com/2h3IFOe.png)
-
-From Daz Studio make sure your character is selected and SendToUnreal
+Make sure your character is selected and SendToUnreal
 
 You may want to set up a new Intermediate Folder so that you don't overwrite existing exported characters.
 
