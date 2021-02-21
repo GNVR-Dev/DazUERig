@@ -3,9 +3,25 @@ Rename - Remove - Reparent Daz bones to use Unreal Engine manneguin animations
 
 Setting up the DazToUnreal plugin:
 
-Make sure the DazToUnreal engine plugin is enabled
+I recomend setting up the plugin as a project plugin instead of an engine plugin.
 
-![Imgur](https://i.imgur.com/8GZYiLA.png)
+This way if the skeleton get messed up it only effects this project not all the projects that use DaztoUnreal
+
+First make sure the project closed before adding the plugin.
+
+In your project's game folder create a new folder and name it Plugins
+
+![Imgur](https://i.imgur.com/DNGWfkD.png)
+
+Find the DazToUnreal Plugin folder
+
+The default path is C:\Program Files\Epic Games\UE_4.25\Engine\Plugins\Marketplace
+
+![Imgur](https://i.imgur.com/aQj1gof.png)
+
+Copy and Paste the entire folder into your projects Plugins folder
+
+![Imgur](https://i.imgur.com/Oz1Yf7e.png)
 
 Add an Unreal Engine animation pack and find the skeleton rig that is used for those animations
 
