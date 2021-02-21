@@ -19,7 +19,7 @@ The default path is C:\Program Files\Epic Games\UE_4.25\Engine\Plugins\Marketpla
 
 ![Imgur](https://i.imgur.com/aQj1gof.png)
 
-Copy and Paste the entire folder into your projects Plugins folder
+Copy and Paste the entire folder into your project's Plugins folder
 
 ![Imgur](https://i.imgur.com/Oz1Yf7e.png)
 
