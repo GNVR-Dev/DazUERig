@@ -9,7 +9,10 @@
 	// Initialize
 	var oNode = Scene.getPrimarySelection();	
 	var oFigure = undefined;
-
+	var x_rotation
+	var y_rotation
+	var z_rotation
+	
 	// Section below copied from Daz Script Samples:
 	// http://docs.daz3d.com/doku.php/public/software/dazstudio/4/referenceguide/scripting/api_reference/samples/start
 
@@ -154,7 +157,44 @@
 					triggerAction( "DzJEDeleteBoneAction" );
 					break;		
 				}
-		
+
+			case "ChangeRotOrder":
+				print (FoundBoneA.getName()+" found in "+ObjectThatHasBone+" rotation order set to "+Change);						    
+					
+				switch (Change){
+					
+					case "XYZ":
+						NewBoneRot = 0;
+						break;
+
+					case "XZY":
+						NewBoneRot = 1;
+						break;					
+
+					case "YXZ":
+						NewBoneRot = 2;
+						break;
+
+					case "YZX":
+						NewBoneRot = 3;
+						break;	
+						
+					case "ZXY":
+						NewBoneRot = 4;
+						break;	
+						
+					case "ZYX":
+						NewBoneRot = 5;
+						break;											
+				}											
+				FoundBoneA.setRotationOrder(DzRotationOrder(NewBoneRot));	
+				break;						
+
+			case "ChangeOrientation":
+				print (FoundBoneA.getName()+" found in "+ObjectThatHasBone+" rotation set to "+Change);
+				FoundBoneA.setOrientationAngles(DzVec3 (x_rotation,y_rotation,z_rotation))
+				break;
+				
 			case "Hip_Pelvis_Change":
 				if (!FoundBoneB) {
 					print (FoundBoneA.getName()+" found in "+ObjectThatHasBone+","+Change+" was not");
@@ -245,13 +285,163 @@
 		Search_For_Bone ("Reparent",BoneToReparent,BoneToReparentTo,BoneToReparentTo)
 	}
 	
-	 	    	
+// Function to set up change bone rotation order
+
+	function ChangeRotOrder (BoneToChangeRotOrder,NewBoneOrder){
+	    			    	
+		Search_For_Bone ("ChangeRotOrder",BoneToChangeRotOrder,"Null",NewBoneOrder)
+			
+	}	
+
+// Function to set up change bone Orientation
+
+	function ChangeBoneOrientation (BoneToChangeOrientation, x_rot,y_rot,z_rot){
+		
+		x_rotation = x_rot
+		y_rotation = y_rot
+		z_rotation = z_rot	
+		Search_For_Bone ("ChangeOrientation",BoneToChangeOrientation,"Null","Null")
+			
+	}		 	    	
 
 //	Start Main Program  //
 //  Edit below if you want change what bones get renamed, removed, or reparented.
 
 
 Hip_Pelvis_Change()
+
+//ChangeRotOrder
+
+// Example:
+// ChangeRotOrder("pelvis","XYZ");
+
+//Note temporary way to change all bones for testing////
+mybonerotation = "XZY"
+//Change back to ChangeRotOrder("pelvis","XYZ"); after testing 
+////////////////////////////////////////////////////////
+
+ChangeRotOrder("pelvis",mybonerotation);
+ChangeRotOrder("abdomenLower",mybonerotation);
+ChangeRotOrder("abdomenUpper",mybonerotation);
+ChangeRotOrder("chestUpper",mybonerotation);
+ChangeRotOrder("lCollar",mybonerotation);
+ChangeRotOrder("lShldrBend",mybonerotation);
+ChangeRotOrder("lForearmBend",mybonerotation);
+ChangeRotOrder("lHand",mybonerotation);
+ChangeRotOrder("rCollar",mybonerotation);
+ChangeRotOrder("rShldrBend",mybonerotation);
+ChangeRotOrder("rForearmBend",mybonerotation);
+ChangeRotOrder("rHand",mybonerotation);
+ChangeRotOrder("neckLower",mybonerotation);
+ChangeRotOrder("head",mybonerotation);
+ChangeRotOrder("lThighBend",mybonerotation);
+ChangeRotOrder("lShin",mybonerotation);
+ChangeRotOrder("lFoot",mybonerotation);
+ChangeRotOrder("rThighBend",mybonerotation);
+ChangeRotOrder("rShin",mybonerotation);
+ChangeRotOrder("rFoot",mybonerotation);
+ChangeRotOrder("lMetatarsals",mybonerotation);
+ChangeRotOrder("rMetatarsals",mybonerotation);
+ChangeRotOrder("lIndex1",mybonerotation);
+ChangeRotOrder("lIndex2",mybonerotation);
+ChangeRotOrder("lIndex3",mybonerotation);
+ChangeRotOrder("lMid1",mybonerotation);
+ChangeRotOrder("lMid2",mybonerotation);
+ChangeRotOrder("lMid3",mybonerotation);
+ChangeRotOrder("lPinky1",mybonerotation);
+ChangeRotOrder("lPinky2",mybonerotation);
+ChangeRotOrder("lPinky3",mybonerotation);
+ChangeRotOrder("lRing1",mybonerotation);
+ChangeRotOrder("lRing2",mybonerotation);
+ChangeRotOrder("lRing3",mybonerotation);
+ChangeRotOrder("lThumb1",mybonerotation);
+ChangeRotOrder("lThumb2",mybonerotation);
+ChangeRotOrder("lThumb3",mybonerotation);
+ChangeRotOrder("rIndex1",mybonerotation);
+ChangeRotOrder("rIndex2",mybonerotation);
+ChangeRotOrder("rIndex3",mybonerotation);
+ChangeRotOrder("rMid1",mybonerotation);
+ChangeRotOrder("rMid2",mybonerotation);
+ChangeRotOrder("rMid3",mybonerotation);
+ChangeRotOrder("rPinky1",mybonerotation);
+ChangeRotOrder("rPinky2",mybonerotation);
+ChangeRotOrder("rPinky3",mybonerotation);
+ChangeRotOrder("rRing1",mybonerotation);
+ChangeRotOrder("rRing2",mybonerotation);
+ChangeRotOrder("rRing3",mybonerotation);
+ChangeRotOrder("rThumb1",mybonerotation);
+ChangeRotOrder("rThumb2",mybonerotation);
+ChangeRotOrder("rThumb3",mybonerotation);
+
+//ChangeRotOrder leaf bones
+ChangeRotOrder ("lShldrTwist",mybonerotation);
+ChangeRotOrder ("lForearmTwist",mybonerotation);
+ChangeRotOrder ("rShldrTwist",mybonerotation);
+ChangeRotOrder ("rForearmTwist",mybonerotation);
+ChangeRotOrder ("lThighTwist",mybonerotation);	
+ChangeRotOrder ("rThighTwist",mybonerotation);
+
+//Change Bone Oriantation
+
+// Example:
+// ChangeBoneOrientation("Name of bone you want to change orientation,x-rotation amount, y-rotation amount, z-rotation amount)
+
+
+/* Commented out to try ChangeRotOrder instead
+
+ChangeBoneOrientation("pelvis",0,0,0);
+ChangeBoneOrientation("abdomenLower",0,0,0);
+ChangeBoneOrientation("abdomenUpper",0,0,0);
+ChangeBoneOrientation("chestUpper",0,0,0);
+ChangeBoneOrientation("lCollar",0,0,0);
+ChangeBoneOrientation("lShldrBend",0,0,0);
+ChangeBoneOrientation("lForearmBend",0,0,0);
+ChangeBoneOrientation("lHand",0,0,0);
+ChangeBoneOrientation("rCollar",0,0,0);
+ChangeBoneOrientation("rShldrBend",0,0,0);
+ChangeBoneOrientation("rForearmBend",0,0,0);
+ChangeBoneOrientation("rHand",0,0,0);
+ChangeBoneOrientation("neckLower",0,0,0);
+ChangeBoneOrientation("head",0,0,0);
+ChangeBoneOrientation("lThighBend",0,0,0);
+ChangeBoneOrientation("lShin",0,0,0);
+ChangeBoneOrientation("lFoot",0,0,0);
+ChangeBoneOrientation("rThighBend",0,0,0);
+ChangeBoneOrientation("rShin",0,0,0);
+ChangeBoneOrientation("rFoot",0,0,0);
+ChangeBoneOrientation("lMetatarsals",0,0,0);
+ChangeBoneOrientation("rMetatarsals",0,0,0);
+ChangeBoneOrientation("lIndex1",0,0,0);
+ChangeBoneOrientation("lIndex2",0,0,0);
+ChangeBoneOrientation("lIndex3",0,0,0);
+ChangeBoneOrientation("lMid1",0,0,0);
+ChangeBoneOrientation("lMid2",0,0,0);
+ChangeBoneOrientation("lMid3",0,0,0);
+ChangeBoneOrientation("lPinky1",0,0,0);
+ChangeBoneOrientation("lPinky2",0,0,0);
+ChangeBoneOrientation("lPinky3",0,0,0);
+ChangeBoneOrientation("lRing1",0,0,0);
+ChangeBoneOrientation("lRing2",0,0,0);
+ChangeBoneOrientation("lRing3",0,0,0);
+ChangeBoneOrientation("lThumb1",0,0,0);
+ChangeBoneOrientation("lThumb2",0,0,0);
+ChangeBoneOrientation("lThumb3",0,0,0);
+ChangeBoneOrientation("rIndex1",0,0,0);
+ChangeBoneOrientation("rIndex2",0,0,0);
+ChangeBoneOrientation("rIndex3",0,0,0);
+ChangeBoneOrientation("rMid1",0,0,0);
+ChangeBoneOrientation("rMid2",0,0,0);
+ChangeBoneOrientation("rMid3",0,0,0);
+ChangeBoneOrientation("rPinky1",0,0,0);
+ChangeBoneOrientation("rPinky2",0,0,0);
+ChangeBoneOrientation("rPinky3",0,0,0);
+ChangeBoneOrientation("rRing1",0,0,0);
+ChangeBoneOrientation("rRing2",0,0,0);
+ChangeBoneOrientation("rRing3",0,0,0);
+ChangeBoneOrientation("rThumb1",0,0,0);
+ChangeBoneOrientation("rThumb2",0,0,0);
+ChangeBoneOrientation("rThumb3",0,0,0);
+*/
 
 //ReparentBone
 
